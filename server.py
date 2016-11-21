@@ -16,6 +16,7 @@ def add_static_route(api, files_dir):
     file_dir = os.path.dirname(os.path.realpath(__file__))
     static_dir = os.path.join(file_dir, files_dir)
     api.add_route('/', StaticFiles(static_dir, 'index.html', False))
+    api.add_route('/browse', StaticFiles(static_dir, 'index.html', False))
     #api.add_route('/styles/monitorrent.css', StaticFiles(os.path.join(static_dir, 'styles'), 'monitorrent.css', False))
     for d, dirnames, files in os.walk(static_dir):
         parts = d[len(file_dir)+1:].split(os.path.sep)
