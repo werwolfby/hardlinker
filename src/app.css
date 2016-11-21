@@ -1,0 +1,9 @@
+body {
+  padding-top: 50px;
+}
+.hard-linker {
+  padding: 40px 15px;
+}
+.hard-linker .folder-path {
+  border-bottom: 1px dashed #ddd;
+}
