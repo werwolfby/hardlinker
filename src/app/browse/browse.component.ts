@@ -1,5 +1,4 @@
-import { Component } from "@angular/core";
-//import {LinksTableComponent} from "./links-table.component";
+import { Component }           from "@angular/core";
 
 @Component({
     template: `
@@ -7,18 +6,18 @@ import { Component } from "@angular/core";
         <div class="container-fluid">
             <div class="pull-left">
                 <div class="checkbox">
-                    <label><input type="checkbox">Show without links only</label>
+                    <label><input name="showWithoutLinksOnlyCheckbox" type="checkbox" [ngModel]="showWithoutLinksOnly" (ngModelChanged)="showWithoutLinksOnly = $event">Show without links only</label>
                 </div>
             </div>
             <div class="pull-right">
                 <div class="checkbox">
-                    <label><input type="checkbox">Show absolute path</label>
+                    <label><input name="showAbsolutePathCheckbox" type="checkbox"  [ngModel]="showAbsolutePath" (ngModelChanged)="showAbsolutePath = $event">Show absolute path</label>
                 </div>
             </div>
         </div>
+        <hl-links-table></hl-links-table>
     </form>
     `,
-    //directives: [LinksTableComponent]
 })
 export class BrowseComponent {
     showWithoutLinksOnly = true;
