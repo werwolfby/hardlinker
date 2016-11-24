@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest
+mock>=1.3
+ddt
+coverage
+coveralls
