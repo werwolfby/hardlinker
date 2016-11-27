@@ -12,13 +12,31 @@ class FolderInfo(object):
         self.name = name
         self.path = path
 
+    @property
+    def abs_path(self):
+        if len(self.path) == 0:
+            return ''
+
+        if self.path[0].endswith(':'):
+            return os.path.join(self.path[0] + os.sep, *self.path[1:])
+
+        return os.path.join(*self.path)
+
+    @staticmethod
+    def from_path(name, path):
+        parts = path.split(os.sep)
+        return FolderInfo(name, parts)
+
 
 class FileInfo(object):
     def __init__(self, folder, path, name):
+        """
+        :type folder: FolderInfo
+        """
         self.folder = folder
         self.path = path
         self.name = name
-        self.abs_path = os.path.join(self.folder.path, *(self.path + [self.name]))
+        self.abs_path = os.path.join(self.folder.abs_path, *(self.path + [self.name]))
 
     @property
     def size(self):
@@ -78,10 +96,13 @@ class Linker(object):
         result = []
 
         for folder_info in folders:
-            for root, _, filenames in os.walk(folder_info.path):
-                result = result + [self._get_file_info(folder_info, root, filename)
-                                   for filename in filenames
-                                   if self._has_linkable_extension(filename)]
+            folder_path = os.sep.join(folder_info.path)
+
+            for root, _, file_names in os.walk(folder_path):
+                root_path = root.split(os.sep)
+                result = result + [self._get_file_info(folder_info, root_path, file_name)
+                                   for file_name in file_names
+                                   if self._has_linkable_extension(file_name)]
 
         return result
 
@@ -94,8 +115,6 @@ class Linker(object):
 
     @staticmethod
     def _get_file_info(folder_info, root, filename):
-        rel = root[len(folder_info.path):]
-        path = rel.split(os.sep)
-        size = os.path.getsize(os.path.join(root, filename))
+        path = root[len(folder_info.path):]
 
-        return FileInfo(folder_info, path[1:] if len(path) > 0 else [], filename)
+        return FileInfo(folder_info, path, filename)

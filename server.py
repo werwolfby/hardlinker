@@ -12,6 +12,7 @@ from hardlinker.linker import Linker, FolderInfo
 from hardlinker.rest import create_api, AuthMiddleware
 from hardlinker.rest.static_file import StaticFiles
 from hardlinker.rest.links import LinkerResource
+from hardlinker.rest.settings import SettingsResource, InputFoldersResource, OutputFoldersResource
 
 
 def add_static_route(api, files_dir):
@@ -30,6 +31,9 @@ def create_app(secret_key, token, linker):
     app = create_api()
     add_static_route(app, 'webapp')
     app.add_route('/api/links', LinkerResource(linker))
+    app.add_route('/api/settings', SettingsResource())
+    app.add_route('/api/settings/input-folders', InputFoldersResource(linker))
+    app.add_route('/api/settings/output-folders', OutputFoldersResource(linker))
     return app
 
 
@@ -117,14 +121,14 @@ def main():
         token = ''.join(random.choice(string.ascii_letters) for _ in range(8))
 
     input_folders = [
-        FolderInfo("Downloads", config.downloads)
+        FolderInfo.from_path("Downloads", config.downloads)
     ]
 
     output_folders = []
     if config.shows is not None:
-        output_folders.append(FolderInfo('Shows', config.shows))
+        output_folders.append(FolderInfo.from_path('Shows', config.shows))
     if config.movies is not None:
-        output_folders.append(FolderInfo('Movies', config.movies))
+        output_folders.append(FolderInfo.from_path('Movies', config.movies))
 
     linker = Linker(input_folders, output_folders, ['mp4', 'avi', 'mkv'])
     linker.update_links()
