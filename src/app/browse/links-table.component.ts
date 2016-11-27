@@ -13,11 +13,10 @@ import { FileInfo, LinkInfo, BrowseService } from "./browse.service";
         <tr *ngFor="let file of files">
             <td width="50%"><file-info [file]="file"></file-info></td>
             <td width="50%" *ngIf="file.links && file.links.length > 0"><file-info *ngFor="let link of file.links" [file]="link"></file-info></td>
-            <td width="50%" *ngIf="!file.links || file.links.length == 0">guess it</td>
+            <td width="50%" *ngIf="!file.links || file.links.length == 0"><guess-it></guess-it></td>
         </tr>
     </table>
-    `,
-    providers: [ BrowseService ]
+    `
 })
 export class LinksTableComponent implements OnInit {
     public files : LinkInfo[] = [];
