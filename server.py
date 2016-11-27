@@ -32,7 +32,7 @@ def create_app(secret_key, token, linker):
     app = create_api()
     add_static_route(app, 'webapp')
     app.add_route('/api/links', LinkerResource(linker))
-    app.add_route('/api/guessit', GuessItResource())
+    app.add_route('/api/guessit', GuessItResource(linker))
     app.add_route('/api/settings', SettingsResource())
     app.add_route('/api/settings/input-folders', InputFoldersResource(linker))
     app.add_route('/api/settings/output-folders', OutputFoldersResource(linker))
