@@ -1,39 +1,4 @@
-from hardlinker.linker import Linker, LinkInfo, FolderInfo
-
-
-class FileInfoResponse(object):
-    def __init__(self, folder, path, name):
-        """
-        :type folder: FolderInfo
-        :type path: str
-        :type name: str
-        """
-        self.folder = folder
-        self.path = path
-        self.name = name
-
-    def to_dict(self):
-        return {
-            'folder': self.folder.name,
-            'path': self.path,
-            'name': self.name
-        }
-
-
-class LinkInfoResponse(FileInfoResponse):
-    def __init__(self, folder, path, name, links):
-        """
-        :type links: list[FileInfoResponse]
-        """
-        super(LinkInfoResponse, self).__init__(folder, path, name)
-        self.links = links
-
-    def to_dict(self):
-        base = super(LinkInfoResponse, self).to_dict()
-
-        base['links'] = [l.to_dict() for l in self.links]
-
-        return base
+from hardlinker.linker import Linker, FileInfo, LinkInfo, FolderInfo
 
 
 class LinkerResource(object):
@@ -46,18 +11,27 @@ class LinkerResource(object):
     def on_get(self, req, resp):
         links = self.linker.links
 
-        resp.json = [self._create_link_response(l).to_dict() for l in links]
+        resp.json = [self._create_link_response(l) for l in links]
 
-    def _create_link_response(self, link):
+    @staticmethod
+    def _create_link_response(link):
         """
         :type link: LinkInfo
         """
-        links = [FileInfoResponse(f.folder, f.path, f.name) for f in link.links]
+        resp = LinkerResource._create_file_info_response(link)
 
-        return LinkInfoResponse(
-            link.folder,
-            link.path,
-            link.name,
-            links
-        )
+        resp['links'] = [LinkerResource._create_file_info_response(l) for l in (link.links or [])]
+
+        return resp
+
+    @staticmethod
+    def _create_file_info_response(info):
+        """
+        :type info: FileInfo
+        """
+        return {
+            'folder': info.folder.name,
+            'path': info.path or [],
+            'name': info.name
+        }
 
