@@ -1,6 +1,7 @@
 import { Component }       from "@angular/core";
 import { BrowseService }   from "./browse.service";
 import { SettingsService } from "./settings.service";
+import { GuessItService }  from "./guessit.service";
 
 @Component({
     template: `
@@ -20,7 +21,7 @@ import { SettingsService } from "./settings.service";
         <hl-links-table></hl-links-table>
     </form>
     `,
-    providers: [ BrowseService, SettingsService ]
+    providers: [ BrowseService, SettingsService, GuessItService ]
 })
 export class BrowseComponent {
     showWithoutLinksOnly = true;

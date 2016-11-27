@@ -1,6 +1,7 @@
 import { Component, OnInit, Input }              from '@angular/core';
 import { FileInfo, LinkInfo, BrowseService }     from "./browse.service";
 import { SettingsService, Settings, FolderInfo } from "./settings.service";
+import { GuessItService }                        from "./guessit.service";
 import { Observable, BehaviorSubject }           from "rxjs";
 import "rxjs/add/operator/combineLatest";
 
@@ -67,14 +68,18 @@ export class GuessItComponent implements OnInit {
     private _settings: Observable<Settings>;
     private _outputFolders: Observable<FolderInfo[]>;
     @Input()
+    public file: FileInfo
+    @Input()
     public absolutePath : boolean;
 
-    constructor(private _settingsService: SettingsService) {
+    constructor(private _settingsService: SettingsService, private _guessItService: GuessItService) {
     }
 
     private guessit() {
         this.state = 1;
-        setTimeout(this.onGuess({folder: "Shows", path: ["Show1", "Season 1"], name: "file.mp4"}), 0.7);
+        this._guessItService
+            .guessit(this.file)
+            .subscribe(data => this.onGuess(data));
     }
 
     private onGuess(data: FileInfo) {
