@@ -14,10 +14,7 @@ class FileInfoResponse(object):
 
     def to_dict(self):
         return {
-            'folder': {
-                'name': self.folder.name,
-                'path': self.folder.path
-            },
+            'folder': self.folder.name,
             'path': self.path,
             'name': self.name
         }

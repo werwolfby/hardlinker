@@ -6,6 +6,7 @@ import { HttpModule }            from '@angular/http';
 import { AppComponent }          from "./app.component"
 import { AppRoutingModule }      from "./app-routing.module"
 import { BrowseComponent }       from "./browse/browse.component"
+import { FileInfoComponent }     from "./browse/file-info.component"
 import { LinksTableComponent }   from "./browse/links-table.component";
 
 import './../app.css';
@@ -17,7 +18,7 @@ import './../app.css';
         FormsModule,
         HttpModule,
     ],
-    declarations: [ AppComponent, BrowseComponent, LinksTableComponent ],
+    declarations: [ AppComponent, BrowseComponent, FileInfoComponent, LinksTableComponent ],
     bootstrap:    [ AppComponent ],
 })
 export class AppModule { }

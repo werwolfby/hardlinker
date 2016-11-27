@@ -11,8 +11,9 @@ import { FileInfo, LinkInfo, BrowseService } from "./browse.service";
             <th width="50%">Dest</th>
         </tr>
         <tr *ngFor="let file of files">
-            <td width="50%">{{file.name}}</td>
-            <td width="50%">{{file.links}}</td>
+            <td width="50%"><file-info [file]="file"></file-info></td>
+            <td width="50%" *ngIf="file.links && file.links.length > 0"><file-info *ngFor="let link of file.links" [file]="link"></file-info></td>
+            <td width="50%" *ngIf="!file.links || file.links.length == 0">guess it</td>
         </tr>
     </table>
     `,
