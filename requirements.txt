@@ -3,6 +3,7 @@ CherryPy>=3.8.0
 falcon>=1.0.0
 itsdangerous
 dateutils
+guessit
 
 #python 2/3 compatibility and backports
 six

@@ -13,6 +13,7 @@ from hardlinker.rest import create_api, AuthMiddleware
 from hardlinker.rest.static_file import StaticFiles
 from hardlinker.rest.links import LinkerResource
 from hardlinker.rest.settings import SettingsResource, InputFoldersResource, OutputFoldersResource
+from hardlinker.rest.guess import GuessItResource
 
 
 def add_static_route(api, files_dir):
@@ -31,6 +32,7 @@ def create_app(secret_key, token, linker):
     app = create_api()
     add_static_route(app, 'webapp')
     app.add_route('/api/links', LinkerResource(linker))
+    app.add_route('/api/guessit', GuessItResource())
     app.add_route('/api/settings', SettingsResource())
     app.add_route('/api/settings/input-folders', InputFoldersResource(linker))
     app.add_route('/api/settings/output-folders', OutputFoldersResource(linker))
