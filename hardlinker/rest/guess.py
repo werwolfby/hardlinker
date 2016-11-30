@@ -16,7 +16,7 @@ class GuessItResource(object):
 
     def on_get(self, req, resp):
         folder = req.get_param('folder', required=True)
-        file_path = req.get_param('filepath', required=True)
+        file_path = req.get_param('path', required=True)
 
         path = file_path.split('/')
 

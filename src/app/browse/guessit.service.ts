@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Http }       from '@angular/http';
-import { Observable } from "rxjs";
-import { FileInfo } from "./browse.service";
+import { Injectable }      from '@angular/core';
+import { Http }            from '@angular/http';
+import { URLSearchParams } from '@angular/http';
+import { Observable }      from "rxjs";
+import { FileInfo }        from "./browse.service";
 import "rxjs/add/operator/map";
 
 @Injectable()
@@ -10,10 +11,12 @@ export class GuessItService {
     }
 
     guessit(fileInfo: FileInfo) : Observable<FileInfo> {
-        const filePath = [...fileInfo.path, fileInfo.name].join('/');
+        let params : URLSearchParams = new URLSearchParams();
+        params.set('folder', fileInfo.folder);
+        params.set('path', [...fileInfo.path, fileInfo.name].join('/'));
 
         return this._http
-            .get(`api/guessit?folder=${fileInfo.folder}&filepath=${filePath}`)
+            .get(`api/guessit`, { search: params })
             .map(r => <FileInfo> r.json());
     }
 }
