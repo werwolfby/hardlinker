@@ -21,7 +21,7 @@ import "rxjs/add/operator/combineLatest";
                     <span> Cancel</span>
                 </button>
                 <file-info [file]="newLink"></file-info>
-                <button (click)="link()"  class="btn btn-success btn-xs" type="submit">
+                <button (click)="link()" class="btn btn-success btn-xs" type="submit">
                     <span class="glyphicon glyphicon-link"   aria-hidden="true"></span>
                     <span> Link</span>
                 </button>
@@ -68,11 +68,11 @@ export class GuessItComponent implements OnInit {
     private _settings: Observable<Settings>;
     private _outputFolders: Observable<FolderInfo[]>;
     @Input()
-    public file: FileInfo
+    public file: LinkInfo
     @Input()
     public absolutePath : boolean;
 
-    constructor(private _settingsService: SettingsService, private _guessItService: GuessItService) {
+    constructor(private _settingsService: SettingsService, private _guessItService: GuessItService, private _browseService: BrowseService) {
     }
 
     private guessit() {
@@ -147,9 +147,14 @@ export class GuessItComponent implements OnInit {
 
     link() {
         this.state = 3;
-        setTimeout(function() {
-            this.state = 0;
-        }, 2);
+        this._browseService.link(this.file, this.newLink)
+            .subscribe(r => {
+                if (!this.file.links) {
+                    this.file.links = [];
+                }
+                this.file.links.push(...r.links);
+                this.state = 0;
+            });
     }
 
     ngOnInit() {

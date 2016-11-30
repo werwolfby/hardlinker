@@ -14,9 +14,9 @@ class LinkerResource(object):
 
         resp.json = [self._create_link_response(l) for l in links]
 
-    def on_put(self, req, resp):
+    def on_post(self, req, resp):
         folder = req.get_param('folder', required=True)
-        file_path = req.get_param('filepath', required=True)
+        file_path = req.get_param('path', required=True)
 
         file_info_dict = req.json
         if 'folder' not in file_info_dict or 'path' not in file_info_dict or 'name' not in file_info_dict:
@@ -37,6 +37,8 @@ class LinkerResource(object):
         link_info = FileInfo(link_folder, file_info_dict['path'], file_info_dict['name'])
 
         self.linker.link(file_info, link_info)
+
+        resp.json = file_info_dict
 
     @staticmethod
     def _create_link_response(link):

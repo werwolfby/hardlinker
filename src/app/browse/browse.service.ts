@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Http }       from '@angular/http';
-import { Observable } from "rxjs"
+import { Injectable }      from '@angular/core';
+import { Http }            from '@angular/http';
+import { URLSearchParams } from '@angular/http';
+import { Observable }      from "rxjs"
 import "rxjs/add/operator/map";
 
 export interface FileInfo {
@@ -24,5 +25,19 @@ export class BrowseService {
         return this._http
             .get(LINKS_API_PATH)
             .map(r => <LinkInfo[]> r.json());
+    }
+
+    link(src : FileInfo, dest : FileInfo) : Observable<LinkInfo> {
+        let params : URLSearchParams = new URLSearchParams();
+        params.set('folder', src.folder);
+        params.set('path', [...src.path, src.name].join('/'));
+        
+        return this._http
+            .post(LINKS_API_PATH, JSON.stringify(dest), { search: params })
+            .map(r => {
+                var result = <LinkInfo> r.json();
+                result.links = [dest];
+                return result;
+            });
     }
 }

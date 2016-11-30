@@ -129,4 +129,8 @@ class Linker(object):
         :type source: FileInfo
         :type link_name: FileInfo
         """
+        folder, _ = os.path.split(link_name.abs_path)
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
         os.link(source.abs_path, link_name.abs_path)
