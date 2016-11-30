@@ -10,11 +10,11 @@ import { GuessItService }  from "./guessit.service";
         <div class="container-fluid">
             <div class="pull-left">
                 <div class="checkbox">
-                    <label><input name="showWithoutLinksOnlyCheckbox" type="checkbox" [ngModel]="showWithoutLinksOnly" (ngModelChanged)="showWithoutLinksOnly = $event">Show without links only</label>
+                    <label><input name="showWithoutLinksOnlyCheckbox" type="checkbox" [(ngModel)]="showWithoutLinksOnly">Show without links only</label>
                 </div>
             </div>
         </div>
-        <hl-links-table></hl-links-table>
+        <hl-links-table [withoutLinksOnly]="showWithoutLinksOnly"></hl-links-table>
     </form>
     `,
     providers: [ BrowseService, SettingsService, GuessItService ]

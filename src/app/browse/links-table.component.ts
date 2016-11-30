@@ -1,6 +1,7 @@
-import { Component, OnInit }                 from '@angular/core';
+import { Component, OnInit, Input }          from '@angular/core';
 import { FileInfo, LinkInfo, BrowseService } from "./browse.service";
-
+import { BehaviorSubject }                   from "rxjs/BehaviorSubject";
+import "rxjs/add/operator/combineLatest";
 
 @Component({
     selector: 'hl-links-table',
@@ -19,16 +20,24 @@ import { FileInfo, LinkInfo, BrowseService } from "./browse.service";
     `
 })
 export class LinksTableComponent implements OnInit {
+    private _withoutLinksOnlyObservable: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
     public files : LinkInfo[] = [];
+
+    @Input()
+    public set withoutLinksOnly(value: boolean) {
+        this._withoutLinksOnlyObservable.next(value);
+    }
 
     constructor(private _browseService : BrowseService) {
     }
 
     ngOnInit() {
-        this._browseService
-            .getAll()
-            .subscribe(files => {
-                this.files = files
-            });
+        var allFiles = this._browseService.getAll();
+
+        var files = allFiles
+            .combineLatest(this._withoutLinksOnlyObservable, 
+                           (files, withoutLinksOnly) => files.filter(r => !withoutLinksOnly || ((r.links ? r.links.length : 0) == 0)))
+            .subscribe(files => this.files = files);
     }
 }
