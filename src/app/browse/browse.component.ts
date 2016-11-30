@@ -4,6 +4,7 @@ import { SettingsService } from "./settings.service";
 import { GuessItService }  from "./guessit.service";
 
 @Component({
+    selector: 'hl-browse',
     template: `
     <form>
         <div class="container-fluid">
