@@ -5,6 +5,7 @@ import sys
 if sys.platform == 'win32' and not hasattr(os.path, 'samefile'):
     import ntfsutils.hardlink
     os.path.samefile = ntfsutils.hardlink.samefile
+    os.link = ntfsutils.hardlink.create
 
 
 class FolderInfo(object):
@@ -64,6 +65,10 @@ class Linker(object):
         self._input_files = {}
         self._output_files = {}
 
+    def get_folder(self, folder):
+        return self.input_folders.get(folder, None) or \
+                self.output_folders.get(folder, None)
+
     def update_links(self):
         def to_size_dict(files):
             result = {}
@@ -118,3 +123,10 @@ class Linker(object):
         path = root[len(folder_info.path):]
 
         return FileInfo(folder_info, path, filename)
+
+    def link(self, source, link_name):
+        """
+        :type source: FileInfo
+        :type link_name: FileInfo
+        """
+        os.link(source.abs_path, link_name.abs_path)
