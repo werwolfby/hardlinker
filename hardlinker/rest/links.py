@@ -10,6 +10,7 @@ class LinkerResource(object):
         self.linker = linker
 
     def on_get(self, req, resp):
+        self.linker.update_links()
         links = self.linker.links
 
         resp.json = [self._create_link_response(l) for l in links]

@@ -86,6 +86,8 @@ class Linker(object):
         self._input_files = to_size_dict(self._get_all_files(*self.input_folders.values()))
         self._output_files = to_size_dict(self._get_all_files(*self.output_folders.values()))
 
+        self.links = []
+
         for size, input_files in self._input_files.items():
             for input_file in input_files:
                 outputs = self._output_files.get(size)

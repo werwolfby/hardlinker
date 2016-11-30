@@ -133,7 +133,6 @@ def main():
         output_folders.append(FolderInfo.from_path('Movies', config.movies))
 
     linker = Linker(input_folders, output_folders, ['mp4', 'avi', 'mkv'])
-    linker.update_links()
 
     app = create_app(secret_key, token, linker)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
