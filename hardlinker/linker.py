@@ -122,6 +122,10 @@ class LinkInfo(FileInfo):
 
 
 class Linker(object):
+    """
+    :type links: list[LinkInfo]
+    """
+
     def __init__(self, input_folders, output_folders, extensions):
         self.input_folders = {f.name: f for f in input_folders}
         self.output_folders = {f.name: f for f in output_folders}
