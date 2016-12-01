@@ -16,7 +16,7 @@ export class GuessItService {
         params.set('path', [...fileInfo.path, fileInfo.name].join('/'));
 
         return this._http
-            .get(`api/guessit`, { search: params })
+            .get(`api/guess/it`, { search: params })
             .map(r => <FileInfo> r.json());
     }
 }

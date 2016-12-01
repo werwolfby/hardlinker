@@ -1,5 +1,5 @@
 from guessit import guessit
-from hardlinker.linker import Linker, FileInfo, ShowsFolderInfo, MoviesFolderInfo
+from hardlinker.linker import Linker, FileInfo, LinkInfo, ShowsFolderInfo, MoviesFolderInfo
 
 
 class Guesser(object):
@@ -37,3 +37,21 @@ class Guesser(object):
             path = []
 
         return FileInfo(folder, path, name)
+
+    def guess_all(self):
+        self.linker.update_links()
+
+        result = []
+
+        for link in self.linker.links:
+            if link.links is not None and len(link.links) > 0:
+                continue
+
+            guessed_info = self._guess_name(link.name)
+
+            guess_link = LinkInfo(link.folder, link.path, link.name)
+            guess_link.links = [guessed_info]
+
+            result.append(guess_link)
+
+        return result

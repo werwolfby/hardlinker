@@ -8,11 +8,12 @@ import argparse
 import warnings
 from cherrypy import wsgiserver
 from hardlinker.linker import Linker, FolderInfo, ShowsFolderInfo, MoviesFolderInfo
+from hardlinker.guesser import Guesser
 from hardlinker.rest import create_api, AuthMiddleware
 from hardlinker.rest.static_file import StaticFiles
 from hardlinker.rest.links import LinkerResource
 from hardlinker.rest.settings import SettingsResource, InputFoldersResource, OutputFoldersResource
-from hardlinker.rest.guess import GuessItResource
+from hardlinker.rest.guess import GuessItResource, GuessAllResource
 
 
 def add_static_route(api, files_dir):
@@ -25,12 +26,13 @@ def add_static_route(api, files_dir):
         api.add_route(url, StaticFiles(d, redirect_to_login=False))
 
 
-def create_app(secret_key, token, linker):
+def create_app(secret_key, token, linker, guesser):
     AuthMiddleware.init(secret_key, token, lambda: False)
     app = create_api()
     add_static_route(app, 'webapp')
     app.add_route('/api/links', LinkerResource(linker))
-    app.add_route('/api/guessit', GuessItResource(linker))
+    app.add_route('/api/guess/it', GuessItResource(guesser))
+    app.add_route('/api/guess/all', GuessAllResource(guesser))
     app.add_route('/api/settings', SettingsResource())
     app.add_route('/api/settings/input-folders', InputFoldersResource(linker))
     app.add_route('/api/settings/output-folders', OutputFoldersResource(linker))
@@ -131,8 +133,9 @@ def main():
         output_folders.append(MoviesFolderInfo.from_path('Movies', config.movies))
 
     linker = Linker(input_folders, output_folders, ['mp4', 'avi', 'mkv'])
+    guesser = Guesser(linker)
 
-    app = create_app(secret_key, token, linker)
+    app = create_app(secret_key, token, linker, guesser)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
     server_start_params = (config.ip, config.port)
     server = wsgiserver.CherryPyWSGIServer(server_start_params, d)
