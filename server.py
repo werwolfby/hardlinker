@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from builtins import range
 import os
 import sys
 import six
@@ -8,7 +7,7 @@ import string
 import argparse
 import warnings
 from cherrypy import wsgiserver
-from hardlinker.linker import Linker, FolderInfo
+from hardlinker.linker import Linker, FolderInfo, ShowsFolderInfo, MoviesFolderInfo
 from hardlinker.rest import create_api, AuthMiddleware
 from hardlinker.rest.static_file import StaticFiles
 from hardlinker.rest.links import LinkerResource
@@ -127,9 +126,9 @@ def main():
 
     output_folders = []
     if config.shows is not None:
-        output_folders.append(FolderInfo.from_path('Shows', config.shows))
+        output_folders.append(ShowsFolderInfo.from_path('Shows', config.shows))
     if config.movies is not None:
-        output_folders.append(FolderInfo.from_path('Movies', config.movies))
+        output_folders.append(MoviesFolderInfo.from_path('Movies', config.movies))
 
     linker = Linker(input_folders, output_folders, ['mp4', 'avi', 'mkv'])
 

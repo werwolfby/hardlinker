@@ -29,6 +29,20 @@ class FolderInfo(object):
         return FolderInfo(name, parts)
 
 
+class ShowsFolderInfo(FolderInfo):
+    @staticmethod
+    def from_path(name, path):
+        parts = path.split(os.sep)
+        return ShowsFolderInfo(name, parts)
+
+
+class MoviesFolderInfo(FolderInfo):
+    @staticmethod
+    def from_path(name, path):
+        parts = path.split(os.sep)
+        return MoviesFolderInfo(name, parts)
+
+
 class FileInfo(object):
     def __init__(self, folder, path, name):
         """

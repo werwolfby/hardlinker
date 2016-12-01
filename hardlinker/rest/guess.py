@@ -1,5 +1,5 @@
 from guessit import guessit
-from hardlinker.linker import Linker
+from hardlinker.linker import Linker, ShowsFolderInfo, MoviesFolderInfo
 
 
 class GuessItResource(object):
@@ -8,8 +8,8 @@ class GuessItResource(object):
         :type linker: Linker
         """
         self.linker = linker
-        shows_folders = filter(lambda f: f.name == "Shows", self.linker.output_folders.values())
-        movies_folders = filter(lambda f: f.name == "Movies", self.linker.output_folders.values())
+        shows_folders = filter(lambda f: isinstance(f, ShowsFolderInfo), self.linker.output_folders.values())
+        movies_folders = filter(lambda f: isinstance(f, MoviesFolderInfo), self.linker.output_folders.values())
 
         self.shows_folder = shows_folders[0].name if len(shows_folders) > 0 else None
         self.movies_folder = movies_folders[0].name if len(movies_folders) > 0 else None
