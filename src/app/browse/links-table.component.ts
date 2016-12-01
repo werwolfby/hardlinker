@@ -1,5 +1,6 @@
 import { Component, OnInit, Input }          from '@angular/core';
 import { FileInfo, LinkInfo, BrowseService } from "./browse.service";
+import { GuessItService }                    from "./guessit.service";
 import { BehaviorSubject }                   from "rxjs/BehaviorSubject";
 import "rxjs/add/operator/combineLatest";
 
@@ -9,7 +10,7 @@ import "rxjs/add/operator/combineLatest";
     <table class="table table-striped">
         <tr>
             <th width="50%">Source</th>
-            <th width="50%">Dest</th>
+            <th width="50%">Dest <a (click)="guessall()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-link" aria-hidden="true"></span><span> Guess All</span></a></th>
         </tr>
         <tr *ngFor="let file of files">
             <td width="50%"><file-info [file]="file"></file-info></td>
@@ -29,7 +30,14 @@ export class LinksTableComponent implements OnInit {
         this._withoutLinksOnlyObservable.next(value);
     }
 
-    constructor(private _browseService : BrowseService) {
+    constructor(private _browseService : BrowseService, private _guessItService : GuessItService) {
+    }
+
+    public guessall() {
+        this._guessItService.guessall()
+            .subscribe(links => {
+                alert(links);
+            });
     }
 
     ngOnInit() {
