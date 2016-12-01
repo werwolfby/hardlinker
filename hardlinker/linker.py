@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 
 
 if sys.platform == 'win32' and not hasattr(os.path, 'samefile'):
@@ -30,6 +31,56 @@ class FolderInfo(object):
 
 
 class ShowsFolderInfo(FolderInfo):
+    class ShowInfo(object):
+        def __init__(self, show, seasons):
+            self.show = show
+            self.seasons = seasons
+
+    _season_match = re.compile(u'^Season\s+(?P<number>\d+)$', re.IGNORECASE)
+    """
+    :type _shows: dict[string, dict[string, string]]
+    """
+    _shows = dict()
+
+    def read_shows(self):
+        root = self.abs_path
+
+        shows = {}
+
+        for show in os.listdir(root):
+            show_folder = os.path.join(root, show)
+            if not os.path.isdir(show_folder):
+                continue
+
+            seasons = {}
+
+            for season in os.listdir(show_folder):
+                season_folder = os.path.join(show_folder, season)
+                if not os.path.isdir(season_folder):
+                    continue
+
+                match = self._season_match.match(season)
+                if match is None:
+                    continue
+
+                number = int(match.group('number'))
+                seasons[number] = season
+
+            shows[show.lower()] = self.ShowInfo(show, seasons)
+
+        self._shows = shows
+
+    def find_show(self, show, season):
+        show_info = self._shows.get(show.lower(), None)
+        if show_info is None:
+            return show, 'Season {0}'.format(season)
+
+        season_info = show_info.seasons.get(season, None)
+        if season_info is None:
+            return show_info.show, 'Season {0}'.format(season)
+
+        return show_info.show, season_info
+
     @staticmethod
     def from_path(name, path):
         parts = path.split(os.sep)
