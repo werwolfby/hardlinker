@@ -60,8 +60,19 @@ import "rxjs/add/operator/combineLatest";
     </div>`,
 })
 export class GuessItComponent implements OnInit {
-    private state: number = 0;
-    private newLink: FileInfo;
+    private get state(): number {
+        if (this.newLink === undefined) {
+            return 0;
+        }
+        if (this.newLink === null) {
+            return 1;
+        }
+        if (this.newLink) {
+            return 2;
+        }
+    }
+    @Input()
+    private newLink: FileInfo = undefined;
     private editLink: FileInfo;
     private rootFolders: FolderInfo[] = [];
     private editSettings: Settings;
@@ -76,14 +87,13 @@ export class GuessItComponent implements OnInit {
     }
 
     private guessit() {
-        this.state = 1;
+        this.newLink = null;
         this._guessItService
             .guessit(this.file)
             .subscribe(data => this.onGuess(data));
     }
 
     private onGuess(data: FileInfo) {
-        this.state = 2;
         this.newLink = data;
     }
     
@@ -103,7 +113,7 @@ export class GuessItComponent implements OnInit {
     }
 
     private cancel() {
-        this.state = 0;
+        this.newLink = undefined;
     }
     
     startEdit() {
@@ -146,14 +156,14 @@ export class GuessItComponent implements OnInit {
     }
 
     link() {
-        this.state = 3;
+        //this.state = 3;
         this._browseService.link(this.file, this.newLink)
             .subscribe(r => {
                 if (!this.file.links) {
                     this.file.links = [];
                 }
                 this.file.links.push(...r.links);
-                this.state = 0;
+                this.newLink = undefined;
             });
     }
 
