@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { FileInfo }                 from "./browse.service";
+import { FileInfo }                 from "./file-info";
 
 @Component({
     selector: 'file-info',

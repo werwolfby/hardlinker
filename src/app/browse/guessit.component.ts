@@ -1,5 +1,6 @@
 import { Component, OnInit, Input }              from '@angular/core';
-import { FileInfo, LinkInfo, BrowseService }     from "./browse.service";
+import { FileInfo, LinkInfo, FileInfoObject }    from "./file-info";
+import { BrowseService }                         from "./browse.service";
 import { SettingsService, Settings, FolderInfo } from "./settings.service";
 import { GuessItService }                        from "./guessit.service";
 import { Observable, BehaviorSubject }           from "rxjs";
@@ -20,7 +21,7 @@ import "rxjs/add/operator/combineLatest";
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     <span> Cancel</span>
                 </button>
-                <file-info [file]="newLink"></file-info>
+                <file-info [file]="file.guess"></file-info>
                 <button (click)="link()" class="btn btn-success btn-xs" type="submit">
                     <span class="glyphicon glyphicon-link"   aria-hidden="true"></span>
                     <span> Link</span>
@@ -61,25 +62,23 @@ import "rxjs/add/operator/combineLatest";
 })
 export class GuessItComponent implements OnInit {
     private get state(): number {
-        if (this.newLink === undefined) {
+        if (this.file.guess === undefined) {
             return 0;
         }
-        if (this.newLink === null) {
+        if (this.file.guess === null) {
             return 1;
         }
-        if (this.newLink) {
+        if (this.file.guess) {
             return 2;
         }
     }
-    @Input()
-    private newLink: FileInfo = undefined;
     private editLink: FileInfo;
     private rootFolders: FolderInfo[] = [];
     private editSettings: Settings;
     private _settings: Observable<Settings>;
     private _outputFolders: Observable<FolderInfo[]>;
     @Input()
-    public file: LinkInfo
+    public file: FileInfoObject
     @Input()
     public absolutePath : boolean;
 
@@ -87,44 +86,44 @@ export class GuessItComponent implements OnInit {
     }
 
     private guessit() {
-        this.newLink = null;
+        this.file.guess = null;
         this._guessItService
             .guessit(this.file)
             .subscribe(data => this.onGuess(data));
     }
 
     private onGuess(data: FileInfo) {
-        this.newLink = data;
+        this.file.guess = data;
     }
-    
+
     getPath(file: FileInfo) {
         if (!file.path || file.path.length == 0)
             return '';
         return file.path.join(this.editSettings.pathSeparator);
     }
-    
+
     setPath(file: FileInfo, path: string) {
         if (!path) {
             path ='';
         }
-        
+
         var folders = path.split(this.editSettings.pathSeparator).filter(p => p && p.length > 0);
         file.path = folders;
     }
 
     private cancel() {
-        this.newLink = undefined;
+        this.file.guess = undefined;
     }
-    
+
     startEdit() {
         this._outputFolders.combineLatest(this._settings, (outputFolders, settings) => ({outputFolders: outputFolders, settings: settings}))
             .subscribe(d => {
                 this.rootFolders = d.outputFolders;
                 this.editSettings = d.settings;
-                this.editLink = Object.assign({}, this.newLink);
+                this.editLink = Object.assign({}, this.file.guess);
             });
     }
-    
+
     getFolderPathByName(folder: string) {
         if (this.absolutePath) {
             var folderInfo = this.rootFolders.filter(f => f.name == folder).pop();
@@ -133,7 +132,7 @@ export class GuessItComponent implements OnInit {
             return folder;
         }
     }
-    
+
     getFolderPath(folder: FolderInfo) {
         if (this.absolutePath) {
             return folder.path.join(this.editSettings.pathSeparator);
@@ -141,29 +140,29 @@ export class GuessItComponent implements OnInit {
             return folder.name;
         }
     }
-    
+
     setRootFolder(rootFolder) {
         this.editLink.folder = rootFolder;
     }
-    
+
     cancelEdit() {
         this.editLink = null;
     }
-    
+
     saveEdit() {
-        this.newLink = this.editLink;
+        this.file.guess = this.editLink;
         this.editLink = null;
     }
 
     link() {
         //this.state = 3;
-        this._browseService.link(this.file, this.newLink)
+        this._browseService.link(this.file, this.file.guess)
             .subscribe(r => {
                 if (!this.file.links) {
                     this.file.links = [];
                 }
                 this.file.links.push(...r.links);
-                this.newLink = undefined;
+                this.file.guess = undefined;
             });
     }
 

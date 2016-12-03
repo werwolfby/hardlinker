@@ -1,7 +1,7 @@
 import { Injectable }         from '@angular/core';
 import { Http }               from '@angular/http';
 import { URLSearchParams }    from '@angular/http';
-import { FileInfo, LinkInfo } from "./browse.service";
+import { FileInfo, LinkInfo } from "./file-info";
 import { Observable }         from "rxjs";
 import "rxjs/add/operator/map";
 
