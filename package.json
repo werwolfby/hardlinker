@@ -1,5 +1,5 @@
 {
-  "name": "hard-linker",
+  "name": "hardlinker",
   "version": "0.2.0",
   "description": "Allow to create hard link for downloaded movies and series",
   "scripts": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/werwolfby/hard-linker.git"
+    "url": "git+https://github.com/werwolfby/hardlinker.git"
   },
   "keywords": [
     "hardlink",
@@ -18,9 +18,9 @@
   "author": "Alexander Puzynia <werwolf.by@gmail.com>",
   "license": "WTFPL",
   "bugs": {
-    "url": "https://github.com/werwolfby/hard-linker/issues"
+    "url": "https://github.com/werwolfby/hardlinker/issues"
   },
-  "homepage": "https://github.com/werwolfby/hard-linker#readme",
+  "homepage": "https://github.com/werwolfby/hardlinker#readme",
   "dependencies": {
     "@angular/common": "~2.2.1",
     "@angular/compiler": "~2.2.1",

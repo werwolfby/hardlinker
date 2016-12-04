@@ -4,4 +4,4 @@ node_modules/
 webapp/
 .cache/
 dist
-hard-linker-*.zip
+hardlinker*.zip
