@@ -1,7 +1,10 @@
 {
   "name": "hard-linker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Allow to create hard link for downloaded movies and series",
+  "scripts": {
+    "preinstall": "npm install -g gulp webpack"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/werwolfby/hard-linker.git"
@@ -39,8 +42,12 @@
     "angular2-template-loader": "^0.6.0",
     "awesome-typescript-loader": "^3.0.0-beta.3",
     "css-loader": "^0.23.1",
+    "del": "^2.2.2",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
+    "gulp": "^3.9.1",
+    "gulp-util": "^3.0.7",
+    "gulp-zip": "^3.2.0",
     "html-webpack-plugin": "^2.7.2",
     "imports-loader": "^0.6.5",
     "less": "^2.5.3",
