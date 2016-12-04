@@ -32,9 +32,11 @@ class FolderInfo(object):
     @staticmethod
     def split_path(path):
         drive, path = os.path.splitdrive(path)
+        if drive == "":
+            drive = os.sep
         if path.startswith(os.sep):
             path = path[len(os.sep):]
-        if path.startswith(os.altsep):
+        if os.altsep and path.startswith(os.altsep):
             path = path[len(os.altsep):]
 
         result_path = []
@@ -221,7 +223,7 @@ class Linker(object):
         result = []
 
         for folder_info in folders:
-            folder_path = os.sep.join(folder_info.path)
+            folder_path = os.path.join(*folder_info.path)
 
             for root, _, file_names in os.walk(folder_path):
                 root_path = FolderInfo.split_path(root)
