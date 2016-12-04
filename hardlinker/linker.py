@@ -26,8 +26,29 @@ class FolderInfo(object):
 
     @staticmethod
     def from_path(name, path):
-        parts = path.split(os.sep)
+        parts = FolderInfo.split_path(path)
         return FolderInfo(name, parts)
+
+    @staticmethod
+    def split_path(path):
+        drive, path = os.path.splitdrive(path)
+        if path.startswith(os.sep):
+            path = path[len(os.sep):]
+        if path.startswith(os.altsep):
+            path = path[len(os.altsep):]
+
+        result_path = []
+
+        while True:
+            path, folder = os.path.split(path)
+            result_path.append(folder)
+
+            if path == "":
+                break
+
+        result_path.reverse()
+
+        return [drive] + result_path
 
 
 class ShowsFolderInfo(FolderInfo):
@@ -83,14 +104,14 @@ class ShowsFolderInfo(FolderInfo):
 
     @staticmethod
     def from_path(name, path):
-        parts = path.split(os.sep)
+        parts = FolderInfo.split_path(path)
         return ShowsFolderInfo(name, parts)
 
 
 class MoviesFolderInfo(FolderInfo):
     @staticmethod
     def from_path(name, path):
-        parts = path.split(os.sep)
+        parts = FolderInfo.split_path(path)
         return MoviesFolderInfo(name, parts)
 
 
@@ -203,7 +224,7 @@ class Linker(object):
             folder_path = os.sep.join(folder_info.path)
 
             for root, _, file_names in os.walk(folder_path):
-                root_path = root.split(os.sep)
+                root_path = FolderInfo.split_path(root)
                 result = result + [self._get_file_info(folder_info, root_path, file_name)
                                    for file_name in file_names
                                    if self._has_linkable_extension(file_name)]

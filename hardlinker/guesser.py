@@ -39,8 +39,6 @@ class Guesser(object):
         return FileInfo(folder, path, name)
 
     def guess_all(self):
-        self.linker.update_links()
-
         result = []
 
         for link in self.linker.links:

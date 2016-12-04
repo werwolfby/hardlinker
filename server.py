@@ -87,8 +87,6 @@ def main():
             self.shows = parsed_args.shows or os.environ.get('HARDLINKER_SHOWS', None)
             self.movies = parsed_args.movies or os.environ.get('HARDLINKER_MOVIES', None)
 
-            has_output_folders = self.shows is not None or self.movies is not None
-
             if self.downloads is None:
                 parser.error('downloads is not specified')
 
@@ -124,23 +122,23 @@ def main():
         token = ''.join(random.choice(string.ascii_letters) for _ in range(8))
 
     input_folders = [
-        FolderInfo.from_path("Downloads", config.downloads)
+        FolderInfo.from_path(u'Downloads', six.text_type(config.downloads))
     ]
 
     output_folders = []
     if config.shows is not None:
-        output_folders.append(ShowsFolderInfo.from_path('Shows', config.shows))
+        output_folders.append(ShowsFolderInfo.from_path(u'Shows', six.text_type(config.shows)))
     if config.movies is not None:
-        output_folders.append(MoviesFolderInfo.from_path('Movies', config.movies))
+        output_folders.append(MoviesFolderInfo.from_path(u'Movies', six.text_type(config.movies)))
 
-    linker = Linker(input_folders, output_folders, ['mp4', 'avi', 'mkv'])
+    linker = Linker(input_folders, output_folders, [u'mp4', u'avi', u'mkv'])
     guesser = Guesser(linker)
 
     app = create_app(secret_key, token, linker, guesser)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
     server_start_params = (config.ip, config.port)
     server = wsgiserver.CherryPyWSGIServer(server_start_params, d)
-    print('Server started on {0}:{1}'.format(*server_start_params))
+    print(u'Server started on {0}:{1}'.format(*server_start_params))
 
     try:
         server.start()
