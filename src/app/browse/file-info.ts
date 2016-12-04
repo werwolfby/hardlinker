@@ -32,6 +32,19 @@ export class FileInfoObject implements LinkInfo {
                FileInfoObject._equals(this.path, fileInfo.path || []);
     }
 
+    prepareLink() : LinkInfo {
+        if (!this.guess) {
+            throw "Guess is null";
+        }
+
+        return {
+            "folder": this.folder,
+            "path": this.path,
+            "name": this.name,
+            "links": [this.guess]
+        };
+    }
+
     static _equals(a1: any[], a2: any[]) : boolean {
         if (a1.length != a2.length) {
             return false;

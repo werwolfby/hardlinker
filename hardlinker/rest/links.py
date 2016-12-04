@@ -2,7 +2,7 @@ from hardlinker.linker import Linker, FileInfo, LinkInfo, FolderInfo
 from falcon import HTTPBadRequest
 
 
-class LinkerResource(object):
+class LinkItResource(object):
     def __init__(self, linker):
         """
         :type linker: Linker
@@ -13,7 +13,7 @@ class LinkerResource(object):
         self.linker.update_links()
         links = self.linker.links
 
-        resp.json = [self._create_link_response(l) for l in links]
+        resp.json = [self.create_link_response(l) for l in links]
 
     def on_post(self, req, resp):
         folder = req.get_param('folder', required=True)
@@ -42,18 +42,18 @@ class LinkerResource(object):
         resp.json = file_info_dict
 
     @staticmethod
-    def _create_link_response(link):
+    def create_link_response(link):
         """
         :type link: LinkInfo
         """
-        resp = LinkerResource._create_file_info_response(link)
+        resp = LinkItResource.create_file_info_response(link)
 
-        resp['links'] = [LinkerResource._create_file_info_response(l) for l in (link.links or [])]
+        resp['links'] = [LinkItResource.create_file_info_response(l) for l in (link.links or [])]
 
         return resp
 
     @staticmethod
-    def _create_file_info_response(info):
+    def create_file_info_response(info):
         """
         :type info: FileInfo
         """
@@ -63,3 +63,26 @@ class LinkerResource(object):
             'name': info.name
         }
 
+
+class LinkAllResource(object):
+    def __init__(self, linker):
+        """
+        :type linker: Linker
+        """
+        self.linker = linker
+
+    def on_post(self, req, resp):
+        links = [LinkInfo.from_json(j, self.linker) for j in req.json]
+
+        result = []
+
+        for link in links:
+            if link.links is not None and len(link.links) > 0:
+                file_info = self.linker.get_link(link.folder, link.path, link.name)
+
+                self.linker.link(file_info, link.links[0])
+                file_info.links.append(link.links[0])
+
+                result.append(file_info)
+
+        resp.json = [LinkItResource.create_link_response(l) for l in result]

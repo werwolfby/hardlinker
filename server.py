@@ -11,7 +11,7 @@ from hardlinker.linker import Linker, FolderInfo, ShowsFolderInfo, MoviesFolderI
 from hardlinker.guesser import Guesser
 from hardlinker.rest import create_api, AuthMiddleware
 from hardlinker.rest.static_file import StaticFiles
-from hardlinker.rest.links import LinkerResource
+from hardlinker.rest.links import LinkItResource, LinkAllResource
 from hardlinker.rest.settings import SettingsResource, InputFoldersResource, OutputFoldersResource
 from hardlinker.rest.guess import GuessItResource, GuessAllResource
 
@@ -30,7 +30,8 @@ def create_app(secret_key, token, linker, guesser):
     AuthMiddleware.init(secret_key, token, lambda: False)
     app = create_api()
     add_static_route(app, 'webapp')
-    app.add_route('/api/links', LinkerResource(linker))
+    app.add_route('/api/link/it', LinkItResource(linker))
+    app.add_route('/api/link/all', LinkAllResource(linker))
     app.add_route('/api/guess/it', GuessItResource(guesser))
     app.add_route('/api/guess/all', GuessAllResource(guesser))
     app.add_route('/api/settings', SettingsResource())

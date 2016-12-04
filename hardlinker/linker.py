@@ -111,6 +111,19 @@ class FileInfo(object):
         except IOError:
             return -1
 
+    @staticmethod
+    def from_json(json, linker):
+        """
+        :type json: dict
+        :type linker: Linker
+        """
+        folder_name = json['folder']
+        folder = linker.get_folder(folder_name)
+        if folder is None:
+            raise KeyError("Can't find folder: {0}".format(folder_name))
+
+        return FileInfo(folder, json['path'], json['name'])
+
 
 class LinkInfo(FileInfo):
     def __init__(self, folder, path, name):
@@ -119,6 +132,22 @@ class LinkInfo(FileInfo):
 
     def add_link(self, link):
         self.links.append(link)
+
+    @staticmethod
+    def from_json(json, linker):
+        """
+        :type json: dict
+        :type linker: Linker
+        """
+        folder_name = json['folder']
+        folder = linker.get_folder(folder_name)
+        if folder is None:
+            raise KeyError("Can't find folder: {0}".format(folder_name))
+
+        link_info = LinkInfo(folder, json['path'], json['name'])
+        for link in json['links']:
+            link_info.add_link(FileInfo.from_json(link, linker))
+        return link_info
 
 
 class Linker(object):
@@ -135,8 +164,7 @@ class Linker(object):
         self._output_files = {}
 
     def get_folder(self, folder):
-        return self.input_folders.get(folder, None) or \
-                self.output_folders.get(folder, None)
+        return self.input_folders.get(folder, None) or self.output_folders.get(folder, None)
 
     def update_links(self):
         def to_size_dict(files):
@@ -194,6 +222,17 @@ class Linker(object):
         path = root[len(folder_info.path):]
 
         return FileInfo(folder_info, path, filename)
+
+    def get_link(self, folder, path, name):
+        for link in self.links:
+            if link.folder == folder and link.name == name and self._path_equal(link.path, path):
+                return link
+
+        return None
+
+    @staticmethod
+    def _path_equal(p1, p2):
+        return len(p1) == len(p2) and all([p1[i] == p2[i] for i in range(len(p1))])
 
     def link(self, source, link_name):
         """

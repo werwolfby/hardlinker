@@ -49,10 +49,17 @@ export class LinksTableComponent implements OnInit {
 
     public guessall() {
         this._guessItService.guessall()
-            .subscribe(links => this._updateFiles(links));
+            .subscribe(links => this._updateGuess(links));
     }
 
-    private _updateFiles(links : LinkInfo[]) {
+    public linkall() {
+        let links = this.files.filter(f => f.guess).map(f => f.prepareLink());
+
+        this._browseService.linkall(links)
+            .subscribe(links => this._updateLinks(links));
+    }
+
+    private _updateGuess(links : LinkInfo[]) {
         for (let link of links) {
             let file = this._findFile(link);
             if (file == null) {
@@ -60,6 +67,18 @@ export class LinksTableComponent implements OnInit {
             }
 
             file.guess = link.links[0];
+        }
+    }
+
+    private _updateLinks(links : LinkInfo[]) {
+        for (let link of links) {
+            let file = this._findFile(link);
+            if (file == null) {
+                continue;
+            }
+
+            file.guess = undefined;
+            file.links = link.links;
         }
     }
 
