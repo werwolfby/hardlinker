@@ -35,24 +35,13 @@ module.exports = {
     }),
     new ExtractTextPlugin('[name].css'),
     new webpack.optimize.UglifyJsPlugin({
-        // to debug prod builds uncomment //debug lines and comment //prod lines
-
-        beautify: true,//debug
-        // mangle: false,//debug
-        // dead_code: false,//debug
-        // unused: false,//debug
-        // deadCode: false,//debug
-        // compress : { screw_ie8 : true, keep_fnames: true, drop_debugger: false, dead_code: false, unused: false, }, // debug
-        // comments: true,//debug
-
-        // beautify: false,//prod
-        // disable mangling because of a bug in angular2 beta.1, beta.2 and beta.3
-        // TODO(mastertinner): enable mangling as soon as angular2 beta.4 is out
-        // mangle: { screw_ie8 : true },//prod
+        beautify: true,
         mangle: false,
-        compress : { screw_ie8 : true},//prod
-        comments: false//prod
-
+        dead_code: false,
+        unused: false,
+        deadCode: false,
+        compress : { screw_ie8 : true, keep_fnames: true, drop_debugger: false, dead_code: false, unused: false, },
+        comments: true,
     })
   ],
 
@@ -65,7 +54,7 @@ module.exports = {
       { test: /\.ts$/,                loaders: ['awesome-typescript-loader', 'angular2-template-loader'] },
       { test: /\.(png|gif|jpg|svg)$/, loader: 'file?name=imgs/[name].[ext]?[hash]' },
       { test: /\.(eot|ttf|woff2?)$/,  loader: 'file?name=fonts/[name].[ext]?[hash]' },
-      { test: /\.css$/,               loader: ExtractTextPlugin.extract('css?minimize') }, 
+      { test: /\.css$/,               loader: ExtractTextPlugin.extract('css?minimize') },
       { test: /\.less$/,              loader: ExtractTextPlugin.extract('css?minimize!less') }
     ],
     noParse: [ path.join(__dirname, 'node_modules', 'angular2', 'bundles') ]
@@ -75,7 +64,7 @@ module.exports = {
     historyApiFallback: true,
     proxy: {
       '/api/*': {
-        target: 'http://localhost:88/'
+        target: 'http://localhost:4735/'
       }
     }
   }
