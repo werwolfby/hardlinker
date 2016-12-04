@@ -22,11 +22,15 @@ import "rxjs/add/operator/combineLatest";
             <td width="50%" *ngIf="file.hasLinks"><file-info *ngFor="let link of file.links" [file]="link"></file-info></td>
             <td width="50%" *ngIf="!file.hasLinks"><guess-it [file]="file"></guess-it></td>
         </tr>
+        <tr *ngIf="loading">
+            <td colspan="2"><span>Loading...</span></td>
+        </tr>
     </table>
     `
 })
 export class LinksTableComponent implements OnInit {
     private _withoutLinksOnlyObservable: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    private loading : boolean = true;
     files : FileInfoObject[] = [];
 
     @Input()
@@ -90,9 +94,14 @@ export class LinksTableComponent implements OnInit {
     ngOnInit() {
         var allFiles = this._browseService.getAll();
 
+        this.loading = true;
+
         allFiles
             .combineLatest(this._withoutLinksOnlyObservable,
                            (files, withoutLinksOnly) => files.filter(r => !withoutLinksOnly || !r.hasLinks))
-            .subscribe(files => this.files = files);
+            .subscribe(files => {
+                this.files = files;
+                this.loading = false;
+            });
     }
 }
