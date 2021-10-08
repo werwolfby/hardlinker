@@ -1,11 +1,11 @@
-pytz
-CherryPy>=3.8.0
-falcon>=1.0.0
-itsdangerous
-dateutils
-guessit
+pytz==2016.7
+CherryPy==8.1.2
+falcon==1.1.0
+itsdangerous==0.24
+dateutils==0.6.6
+guessit==2.1.1
 
 #python 2/3 compatibility and backports
-six
-enum34>=1.0.4
-future
+six==1.10.0
+enum34==1.1.6
+future==0.16.0
