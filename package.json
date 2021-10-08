@@ -1,6 +1,6 @@
 {
   "name": "hardlinker",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Allow to create hard link for downloaded movies and series",
   "scripts": {
     "preinstall": "npm install -g gulp webpack"
